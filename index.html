@@ -3,132 +3,305 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Margin Voice Beta</title>
-  <meta name="description" content="Margin Voice turns papers into audiobooks you review by voice: say “stop”, speak your comment, say “continue”. Android beta.">
+  <title>Margin Voice</title>
+  <meta name="description" content="Margin Voice reads a paper to you. Say “stop”, speak your comment, say “continue”. For Android, iPhone, iPad and Mac.">
   <meta name="theme-color" content="#1d2021">
   <link rel="icon" href="assets/favicon.png">
   <link rel="canonical" href="https://kaikunze.de/marginvoice/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Margin Voice Beta: review papers by listening">
-  <meta property="og:description" content="Listen to a paper, say “stop”, speak your comment. On-device speech, comments written back into the PDF.">
+  <meta property="og:title" content="Margin Voice: review papers by listening">
+  <meta property="og:description" content="Listen to a paper, say “stop”, speak your comment. Speech stays on the device, and comments go back into the PDF.">
   <meta property="og:url" content="https://kaikunze.de/marginvoice/">
   <meta property="og:image" content="https://kaikunze.de/marginvoice/assets/icon.png">
   <style>
     :root {
-      --bg: #1d2021; --surface: #282828; --border: #504945;
+      --bg: #1d2021; --surface: #282828; --surface2: #32302f; --border: #504945;
       --text: #ebdbb2; --dim: #a89984; --accent: #83a598; --on-accent: #1d2021;
       --red: #fb4934; --yellow: #fabd2f; --green: #b8bb26; --orange: #fe8019;
       --serif: "Iowan Old Style", "Source Serif 4", Georgia, serif;
       --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      --ease: cubic-bezier(.2, .7, .2, 1);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; }
-    body { background: var(--bg); color: var(--text); font: 17px/1.55 var(--sans); }
+    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font: 17px/1.55 var(--sans); overflow-x: hidden; }
     a { color: var(--accent); }
-    main { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
-    header { display: flex; gap: 18px; align-items: center; padding: 48px 0 20px; }
-    header img { width: 84px; height: 84px; border-radius: 20px; flex: none; }
-    h1 { font: 600 2.1rem/1.15 var(--serif); }
-    .badge { display: inline-block; font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
-      color: var(--on-accent); background: var(--yellow); border-radius: 6px; padding: 2px 8px; vertical-align: middle; margin-left: 6px; }
-    .lede { font: 1.3rem/1.45 var(--serif); margin: 8px 0 28px; }
-    h2 { font: 600 1.35rem/1.3 var(--serif); margin: 44px 0 12px; }
+    main { max-width: 820px; margin: 0 auto; padding: 0 16px 64px; }
+    h1 { font: 600 2.6rem/1.1 var(--serif); }
+    h2 { font: 600 1.55rem/1.3 var(--serif); margin: 64px 0 14px; }
+    h3 { font: 600 1.15rem/1.3 var(--serif); margin-bottom: 6px; }
     p + p { margin-top: 10px; }
     .dim { color: var(--dim); }
-    .cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 6px; }
-    .button { display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 22px; border-radius: 26px;
-      font-weight: 600; text-decoration: none; background: var(--accent); color: var(--on-accent); }
-    .button.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
     .small { font-size: .85rem; color: var(--dim); overflow-wrap: anywhere; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin: 14px 0; }
-    ol, ul { padding-left: 1.3em; }
-    li + li { margin-top: 6px; }
-    .say { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; }
-    .say b { font-family: var(--serif); font-size: 1.1rem; color: var(--text); white-space: nowrap; }
-    .say span { color: var(--dim); }
-    .tags span { display: inline-block; border-radius: 6px; padding: 1px 8px; margin: 2px 4px 2px 0; font-size: .9rem; color: var(--on-accent); }
+    code { font-size: .85em; background: var(--surface2); border-radius: 4px; padding: 1px 5px; overflow-wrap: anywhere; }
+
+    /* hero */
+    .hero { text-align: center; padding: 64px 0 8px; }
+    .hero-icon { width: 104px; height: 104px; border-radius: 24px; animation: icon-float 6s ease-in-out infinite;
+      box-shadow: 0 18px 50px rgba(131, 165, 152, .18); }
+    @keyframes icon-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .hero h1 { margin-top: 22px; }
+    .lede { font: 1.3rem/1.45 var(--serif); max-width: 620px; margin: 14px auto 0; }
+    .waveform { display: flex; align-items: center; justify-content: center; gap: 3px; height: 44px; margin: 26px 0 8px; }
+    .waveform .bar { width: 3px; border-radius: 3px; background: var(--accent); animation: wave 1.2s ease-in-out infinite; opacity: .7; }
+    @keyframes wave { 0%, 100% { height: 6px; opacity: .35; } 50% { height: var(--h, 30px); opacity: .9; } }
+
+    /* platform cards */
+    .platforms { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 28px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+    .card h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .card p { font-size: .95rem; }
+    .badge { display: inline-block; font: 600 .7rem/1 var(--sans); letter-spacing: .06em; text-transform: uppercase;
+      color: var(--on-accent); background: var(--yellow); border-radius: 6px; padding: 4px 7px; }
+    .cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 8px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px; border-radius: 24px;
+      font-weight: 600; text-decoration: none; background: var(--accent); color: var(--on-accent); transition: transform .2s var(--ease); }
+    .button:hover { transform: translateY(-2px); }
+    .button.secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .button.waiting { background: var(--surface2); color: var(--dim); border: 1px dashed var(--border); pointer-events: none; }
+
+    /* demo */
+    .demo { margin-top: 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+    .demo-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: .8rem; color: var(--dim); }
+    .demo-bar .title { margin-left: auto; font-family: var(--serif); font-style: italic; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; min-width: 0; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); flex: none; }
+    .dot.rec { background: var(--red); animation: pulse-dot 1.4s ease-in-out infinite; }
+    @keyframes pulse-dot { 0%, 100% { box-shadow: 0 0 0 0 rgba(251, 73, 52, .45); } 50% { box-shadow: 0 0 0 7px rgba(251, 73, 52, 0); } }
+    .demo-body { padding: 22px 22px 8px; font: 1.12rem/1.7 var(--serif); color: var(--dim); min-height: 330px; }
+    .demo-body .s { transition: color .4s, background-color .4s; border-radius: 4px; }
+    .demo-body .s.now { color: var(--text); background: rgba(131, 165, 152, .16); }
+    .note { display: none; margin: 12px 0 10px; padding: 10px 14px; border-left: 3px solid var(--red); background: var(--surface2);
+      border-radius: 0 10px 10px 0; font: .95rem/1.5 var(--sans); color: var(--text); }
+    .note.show { display: block; animation: rise .4s var(--ease); }
+    .note .meta { font-size: .78rem; color: var(--dim); display: flex; gap: 8px; align-items: center; margin-bottom: 3px; }
+    .chip { font-size: .72rem; font-weight: 600; border-radius: 6px; padding: 1px 7px; color: var(--on-accent); background: var(--red);
+      opacity: 0; transform: scale(.8); transition: opacity .3s, transform .3s var(--ease); }
+    .chip.show { opacity: 1; transform: none; }
+    .cursor { display: inline-block; width: 2px; height: 1.1em; background: var(--accent); vertical-align: text-bottom; animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .demo-foot { display: flex; align-items: center; gap: 12px; padding: 12px 16px 16px; min-height: 58px; }
+    .said { font: 600 1.05rem var(--serif); color: var(--text); opacity: 0; transform: translateY(4px); transition: opacity .3s, transform .3s var(--ease); }
+    .said.show { opacity: 1; transform: none; }
+    .state { margin-left: auto; font-size: .82rem; color: var(--accent); border: 1px solid var(--border); border-radius: 16px; padding: 4px 12px; white-space: nowrap; }
+    .state.rec { color: var(--red); }
+    .demo-caption { text-align: center; margin-top: 10px; font-size: .85rem; color: var(--dim); }
+
+    /* steps */
+    .steps { display: grid; gap: 18px; counter-reset: step; margin-top: 30px; }
+    .step { display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; }
+    .step::before { counter-increment: step; content: counter(step); width: 44px; height: 44px; border-radius: 50%;
+      display: grid; place-items: center; font: 600 1.1rem var(--serif); color: var(--on-accent); background: var(--accent); }
+    .step p { color: var(--dim); }
+
+    /* screenshots */
     .shots { display: flex; gap: 14px; overflow-x: auto; padding: 4px 0 10px; scroll-snap-type: x mandatory; }
     .shots img { height: 460px; max-width: 70vw; object-fit: contain; border-radius: 18px; border: 1px solid var(--border); scroll-snap-align: start; }
-    code { font-size: .85em; background: var(--surface); border-radius: 4px; padding: 1px 5px; overflow-wrap: anywhere; }
-    footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--border); font-size: .85rem; color: var(--dim); }
-    @media (max-width: 520px) {
-      header { padding-top: 28px; }
-      header img { width: 64px; height: 64px; border-radius: 15px; }
-      h1 { font-size: 1.7rem; }
+    .wide { width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--border); display: block; margin-top: 14px; }
+
+    .say { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; }
+    .say b { font-family: var(--serif); font-size: 1.1rem; white-space: nowrap; }
+    .say span { color: var(--dim); }
+    .tags span { display: inline-block; border-radius: 6px; padding: 1px 8px; margin: 2px 4px 2px 0; font-size: .9rem; color: var(--on-accent); }
+    ol, ul { padding-left: 1.3em; }
+    li + li { margin-top: 6px; }
+    footer { margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--border); font-size: .85rem; color: var(--dim); }
+
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+    .reveal.visible { opacity: 1; transform: none; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    @media (max-width: 640px) {
+      .hero { padding-top: 40px; }
+      h1 { font-size: 2.1rem; }
       .lede { font-size: 1.15rem; }
+      .platforms { grid-template-columns: 1fr; }
+      .demo-body { font-size: 1.02rem; padding: 18px 16px 6px; min-height: 420px; }
       .say { grid-template-columns: 1fr; gap: 0; }
       .say span { margin-bottom: 8px; }
       .shots img { height: 380px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-icon, .waveform .bar, .dot.rec, .cursor { animation: none; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .button { transition: none; }
     }
   </style>
 </head>
 <body>
 <main>
-  <header>
-    <img src="assets/icon.png" alt="">
-    <div><h1>Margin Voice <span class="badge">Beta</span></h1>
-      <div class="dim">for Android · iPhone, iPad and Mac via TestFlight soon</div></div>
-  </header>
+  <section class="hero">
+    <img class="hero-icon" src="assets/icon.png" alt="">
+    <h1>Margin Voice</h1>
+    <p class="lede">Review papers by listening. Margin Voice reads a paper to you. When something strikes you, say “stop”, speak your comment and say “continue”. The comment is filed on the sentence you just heard.</p>
+    <div class="waveform" aria-hidden="true" id="wave"></div>
+  </section>
 
-  <p class="lede">Review papers by listening. Margin Voice reads a paper to you; when something strikes you, say “stop”, speak your comment, say “continue”. Your comments land on the sentence you just heard, and can go back into the PDF.</p>
-
-  <div class="cta">
-    <a class="button" href="https://github.com/kkai/marginvoice/releases/latest/download/marginvoice-beta.apk">Download for Android</a>
-    <a class="button secondary" href="https://github.com/kkai/marginvoice/releases/latest/download/cuddle-fish.drafttalk">Sample paper</a>
+  <div class="platforms">
+    <div class="card reveal">
+      <h3>Android <span class="badge">Beta</span></h3>
+      <p class="dim">Android 13 or newer on a 64-bit phone. Tested on a Pixel 6 Pro. The download is about 107 MB.</p>
+      <div class="cta">
+        <a class="button" href="https://github.com/kkai/marginvoice/releases/latest/download/marginvoice-beta.apk">Download APK</a>
+        <a class="button secondary" href="https://github.com/kkai/marginvoice/releases/latest/download/cuddle-fish.drafttalk">Sample paper</a>
+      </div>
+      <p class="small">Checksums and every version are on the <a href="https://github.com/kkai/marginvoice/releases">releases page</a>. <a href="#install">How to install</a></p>
+    </div>
+    <div class="card reveal" id="apple">
+      <h3>iPhone, iPad and Mac <span class="badge">TestFlight</span></h3>
+      <p class="dim">iOS 26 and macOS 26; the Mac app needs Apple silicon. One app covers all three devices, first through TestFlight, then on the App Store.</p>
+      <div class="cta">
+        <!-- the TestFlight link goes into data-href; the button then turns live -->
+        <a class="button waiting" id="testflight" data-href="" href="#apple">TestFlight link coming soon</a>
+      </div>
+      <p class="small">TestFlight is Apple’s app for beta versions. Open the link on the iPhone, iPad or Mac to join.</p>
+    </div>
   </div>
-  <p class="small">Android 13 or newer, 64-bit phone (Pixel 6 and later, most phones since 2019) · about 110 MB ·
-    SHA-256 and all versions on the <a href="https://github.com/kkai/marginvoice/releases">releases page</a>.</p>
 
-  <div class="shots" id="shots" aria-label="Screenshots">
-    <img src="assets/library.png" alt="The library: three papers, with comment and bookmark counts">
-    <img src="assets/player.png" alt="The player: the sentence being read, Play and Comment buttons">
-    <img src="assets/comments.png" alt="Comments with review tags">
-    <img src="assets/export.png" alt="Export: review draft, comments in the PDF, the whole book">
+  <h2 class="reveal">How it works</h2>
+  <div class="demo reveal" role="img" aria-label="Animation: the paper is read sentence by sentence; the listener says stop, speaks a comment tagged Weakness, and says continue">
+    <div class="demo-bar"><span class="dot" id="recdot"></span><span style="white-space:nowrap">0:48 · Abstract</span>
+      <span class="title">Cuddle-Fish: Exploring a Soft Floating Robot with Flapping Wings</span></div>
+    <div class="demo-body" id="demo-body">
+      <span class="s">In contrast, lighter-than-air flapping-wing robots, inspired by animal movement, offer a soft, quiet, and touch-safe alternative.</span>
+      <span class="s">Building on these advantages, we present Cuddle-Fish, a soft, flapping-wing floating robot designed for close-proximity interactions in indoor spaces.</span>
+      <span class="s">Through a user study with 24 participants, we explored their perceptions of the robot and experiences during a series of co-located demonstrations.</span>
+      <div class="note" id="note"><div class="meta">0:48 · Abstract <span class="chip" id="chip">Weakness</span></div><span id="typed"></span><span class="cursor"></span></div>
+      <span class="s">Results showed that participants felt safe, willingly engaged in touch-based interactions with the robot, and exhibited spontaneous affective behaviours.</span>
+    </div>
+    <div class="demo-foot"><span class="said" id="said">“stop”</span><span class="state" id="state">Listening</span></div>
+  </div>
+  <p class="demo-caption reveal">“Weakness” is the first word of the comment, so the comment is tagged with it.</p>
+
+  <div class="steps">
+    <div class="step reveal"><div><h3>Turn a paper into an audiobook</h3>
+      <p>Pick a PDF, Markdown, RTF or text file. Margin Voice finds the sections, makes them chapters and narrates the text on the device. Android and iPhone use the device’s own voice; the Mac uses natural neural voices that run on the Mac. A book made on one device opens on the others as a <code>.drafttalk</code> file, like the sample paper.</p></div></div>
+    <div class="step reveal"><div><h3>Listen, or read along</h3>
+      <p>The sentence being read is highlighted. Listen with headphones on a walk, or read along at the desk.</p></div></div>
+    <div class="step reveal"><div><h3>Say “stop” and speak</h3>
+      <p>A beep starts the recording. The comment is placed 1.5 seconds before you said “stop”, about the time it takes to react to what you heard. Say “continue” and the book plays on from 2 seconds before where it stopped. Both times can be changed in Settings.</p></div></div>
+    <div class="step reveal"><div><h3>Tag it as you speak</h3>
+      <p>Start the comment with a review word and it is filed under that heading:</p>
+      <p class="tags"><span style="background:var(--accent)">summary</span><span style="background:var(--green)">strength</span><span style="background:var(--red)">weakness</span><span style="background:var(--yellow)">question</span><span style="background:var(--dim)">minor</span></p></div></div>
+    <div class="step reveal"><div><h3>Take it back to the paper</h3>
+      <p>Export a review draft sorted by tag, your comments as Markdown, CSV or JSON, or the paper’s PDF with a highlight and a note on every commented sentence.</p></div></div>
   </div>
 
-  <h2>Install the beta</h2>
-  <ol>
-    <li>Open this page on your phone and tap <b>Download for Android</b>.</li>
-    <li>Open the downloaded file. Android asks once to allow installs from your browser: allow it, then tap <b>Install</b>.</li>
-    <li>Updates: download the new version the same way; it installs over the old one and keeps your books and comments.</li>
-  </ol>
-
-  <h2>Try it with a paper</h2>
-  <div class="card">
-    <p><b>Cuddle-fish: Exploring a Soft Floating Robot with Flapping Wings for Physical Interactions</b><br>
-      <span class="dim">Xu, Shao, Ju, Shen, Gao, Chen, Zhang, Pai, Barbareschi, Hoppe, Minamizawa, Kunze · Augmented Humans 2025</span></p>
-    <p>Tap <a href="https://github.com/kkai/marginvoice/releases/latest/download/cuddle-fish.drafttalk">Sample paper</a> on the phone and open the file with Margin Voice. It brings the audio, the narration text and the
-      <a href="https://kaikunze.de/papers/pdf/xu2025cuddle.pdf">paper's PDF</a>, so you can export your comments back into it.</p>
+  <h2 class="reveal">On Android</h2>
+  <div class="shots reveal" aria-label="Android screenshots">
+    <img src="assets/library.png" alt="The library: three papers, with comment and bookmark counts" loading="lazy">
+    <img src="assets/player.png" alt="The player: the sentence being read, Play and Comment buttons" loading="lazy">
+    <img src="assets/comments.png" alt="Comments with review tags" loading="lazy">
+    <img src="assets/export.png" alt="Export: review draft, comments in the PDF, the whole book" loading="lazy">
   </div>
-  <p>Your own papers: in Margin Voice's library, open the menu at the top and choose <b>Convert Document…</b>, then pick a PDF, Markdown, RTF or text file. The phone narrates it with its own voice, in the background.</p>
 
-  <h2>What you can say</h2>
-  <div class="say">
+  <h2 class="reveal">On iPhone, iPad and Mac</h2>
+  <p class="reveal">The same app runs on all three. On the Mac, the whole paper sits in one window with your notes beside it, and PDFs dropped onto the window are converted. With sync on, books and comments follow you through iCloud Drive.</p>
+  <img class="wide reveal" src="assets/mac.jpg" width="1600" height="1025" alt="Margin Voice on the Mac: the library, the paper with the current sentence highlighted, and the comments beside it" loading="lazy">
+
+  <h2 class="reveal">What you can say</h2>
+  <div class="say reveal">
     <b>“stop”</b><span>pause and record a comment (a beep starts it)</span>
-    <b>“continue”</b><span>save the comment and play on, a moment before where you stopped</span>
+    <b>“continue”</b><span>save the comment and play on</span>
     <b>“mark this”</b><span>bookmark the sentence just read</span>
     <b>“repeat” / “back”</b><span>hear the sentence again / go back 15 seconds</span>
     <b>“weiter”, “Stopp” …</b><span>the same in German (Settings › Command Language)</span>
   </div>
-  <p style="margin-top:14px">Start a comment with a review word and it is filed under it:</p>
-  <p class="tags"><span style="background:var(--accent)">summary</span><span style="background:var(--green)">strength</span><span style="background:var(--red)">weakness</span><span style="background:var(--yellow)">question</span><span style="background:var(--dim)">minor</span>
-    <span class="dim">e.g. “weakness: the baseline is never tuned”.</span></p>
-  <p>Export gives a review draft sorted by these headings, the comments as Markdown, CSV or JSON, and the paper's PDF with a highlight and a note on every commented sentence.</p>
+  <p class="dim reveal" style="margin-top:12px">A headset works too: the next-track button starts a comment, and the previous-track button discards it.</p>
 
-  <h2>Private by design</h2>
-  <p>Voice commands and transcription run on the phone. Nothing is sent anywhere, unless you turn on sync with your own Nextcloud or WebDAV server (Settings › Sync), which also reaches Margin Voice on iPhone, iPad and Mac. There is no account, no analytics and no tracking. <a href="privacy.html">Privacy policy</a>.</p>
+  <h2 class="reveal">Private by design</h2>
+  <p class="reveal">Voice commands and transcription run on the device. There is no account, no analytics and no tracking. Sync stays off until you turn it on. It then goes to storage you choose: iCloud Drive between Apple devices, or your own Nextcloud or WebDAV server, which Android reaches too. <a href="privacy.html">Privacy policy</a>.</p>
 
-  <h2>This is a beta</h2>
-  <ul>
-    <li>Tested on a Pixel 6 Pro. Other phones' microphones and Bluetooth stacks may behave differently.</li>
-    <li>Voice commands can misfire while a book plays over the speaker; headphones help.</li>
-    <li>Natural neural voices for converting papers on the phone are coming; for now the phone's own voice reads them.</li>
+  <h2 class="reveal" id="install">Install the Android beta</h2>
+  <ol class="reveal">
+    <li>Open this page on the phone and tap <b>Download APK</b>.</li>
+    <li>Open the downloaded file. Android asks once to allow installs from your browser: allow it, then tap <b>Install</b>.</li>
+    <li>Tap <b>Sample paper</b> and open the file with Margin Voice. To use your own paper: Library › menu › <b>Convert Document…</b></li>
+    <li>A new version installs the same way, over the old one, and keeps your books and comments.</li>
+  </ol>
+
+  <h2 class="reveal">This is a beta</h2>
+  <ul class="reveal">
+    <li>The Android app is tested on a Pixel 6 Pro. Other phones’ microphones and Bluetooth may behave differently.</li>
+    <li>Over the speaker, the book’s own voice or people talking nearby can trigger a command. Headphones help.</li>
+    <li>Natural neural voices for converting papers on Android are in progress; for now the phone’s voice reads them.</li>
     <li>Found a problem or have an idea? <a href="https://github.com/kkai/marginvoice/issues/new">Open an issue on GitHub</a>.</li>
   </ul>
 
   <footer>
-    Margin Voice by <a href="https://kaikunze.de">Kai Kunze</a>. Open-source components and their licences are listed in the app under Settings › Licences.
+    Margin Voice by <a href="https://kaikunze.de">Kai Kunze</a>. The sample paper is
+    <a href="https://kaikunze.de/papers/pdf/xu2025cuddle.pdf">Cuddle-Fish</a> (Xu et al., Augmented Humans 2025).
+    Open-source components and their licences are listed in the app under Settings › Licences.
   </footer>
 </main>
+<script>
+  (function () {
+    // TestFlight: the button turns live once data-href holds the link
+    var tf = document.getElementById('testflight');
+    if (tf.dataset.href) {
+      tf.href = tf.dataset.href; tf.textContent = 'Join on TestFlight'; tf.classList.remove('waiting');
+    }
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // hero waveform
+    var wave = document.getElementById('wave');
+    for (var i = 0; i < 28; i++) {
+      var b = document.createElement('span');
+      b.className = 'bar';
+      b.style.setProperty('--h', (10 + Math.round(Math.abs(Math.sin(i * 1.7)) * 26)) + 'px');
+      b.style.animationDelay = (i * 0.06) + 's';
+      wave.appendChild(b);
+    }
+
+    // scroll reveal
+    var reveals = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window) || reduce) {
+      reveals.forEach(function (el) { el.classList.add('visible'); });
+    } else {
+      var ro = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); } });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      reveals.forEach(function (el) { ro.observe(el); });
+    }
+
+    // the demo: sentences read one by one, "stop", a spoken comment, "continue"
+    var s = document.querySelectorAll('#demo-body .s');
+    var note = document.getElementById('note'), typed = document.getElementById('typed'), chip = document.getElementById('chip');
+    var said = document.getElementById('said'), state = document.getElementById('state'), dot = document.getElementById('recdot');
+    var comment = '24 participants is a small sample, and all of them had used drones before.';
+
+    function now(i) { s.forEach(function (el, j) { el.classList.toggle('now', j === i); }); }
+    function say(word) { said.textContent = word; said.classList.add('show'); setTimeout(function () { said.classList.remove('show'); }, 1400); }
+    function recording(on) { dot.classList.toggle('rec', on); state.classList.toggle('rec', on); state.textContent = on ? 'Recording' : 'Listening'; }
+    function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+    if (reduce || !('IntersectionObserver' in window)) {
+      now(2); note.classList.add('show'); chip.classList.add('show'); typed.textContent = comment;
+      return;
+    }
+    async function loop() {
+      for (;;) {
+        note.classList.remove('show'); chip.classList.remove('show'); typed.textContent = ''; recording(false);
+        now(0); await wait(2600);
+        now(1); await wait(3000);
+        now(2); await wait(2400);
+        say('“stop”'); await wait(600);
+        recording(true); note.classList.add('show'); await wait(800);
+        chip.classList.add('show');  // the spoken "weakness" becomes the tag
+        for (var k = 0; k <= comment.length; k++) { typed.textContent = comment.slice(0, k); await wait(38); }
+        await wait(900);
+        say('“continue”'); recording(false); await wait(700);
+        now(3); await wait(3400);
+        now(-1); await wait(900);
+      }
+    }
+    var started = false;
+    var dob = new IntersectionObserver(function (e) {
+      if (e[0].isIntersecting && !started) { started = true; loop(); }
+    }, { threshold: 0.3 });
+    dob.observe(document.querySelector('.demo'));
+  })();
+</script>
 </body>
 </html>
