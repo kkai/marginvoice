@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Margin Voice Beta</title>
+  <meta name="description" content="Margin Voice turns papers into audiobooks you review by voice: say “stop”, speak your comment, say “continue”. Android beta.">
+  <meta name="theme-color" content="#1d2021">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="canonical" href="https://kaikunze.de/marginvoice/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Margin Voice Beta: review papers by listening">
+  <meta property="og:description" content="Listen to a paper, say “stop”, speak your comment. On-device speech, comments written back into the PDF.">
+  <meta property="og:url" content="https://kaikunze.de/marginvoice/">
+  <meta property="og:image" content="https://kaikunze.de/marginvoice/assets/icon.png">
+  <style>
+    :root {
+      --bg: #1d2021; --surface: #282828; --border: #504945;
+      --text: #ebdbb2; --dim: #a89984; --accent: #83a598; --on-accent: #1d2021;
+      --red: #fb4934; --yellow: #fabd2f; --green: #b8bb26; --orange: #fe8019;
+      --serif: "Iowan Old Style", "Source Serif 4", Georgia, serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: var(--bg); color: var(--text); font: 17px/1.55 var(--sans); }
+    a { color: var(--accent); }
+    main { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
+    header { display: flex; gap: 18px; align-items: center; padding: 48px 0 20px; }
+    header img { width: 84px; height: 84px; border-radius: 20px; flex: none; }
+    h1 { font: 600 2.1rem/1.15 var(--serif); }
+    .badge { display: inline-block; font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--on-accent); background: var(--yellow); border-radius: 6px; padding: 2px 8px; vertical-align: middle; margin-left: 6px; }
+    .lede { font: 1.3rem/1.45 var(--serif); margin: 8px 0 28px; }
+    h2 { font: 600 1.35rem/1.3 var(--serif); margin: 44px 0 12px; }
+    p + p { margin-top: 10px; }
+    .dim { color: var(--dim); }
+    .cta { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 6px; }
+    .button { display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 22px; border-radius: 26px;
+      font-weight: 600; text-decoration: none; background: var(--accent); color: var(--on-accent); }
+    .button.secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .small { font-size: .85rem; color: var(--dim); overflow-wrap: anywhere; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin: 14px 0; }
+    ol, ul { padding-left: 1.3em; }
+    li + li { margin-top: 6px; }
+    .say { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; }
+    .say b { font-family: var(--serif); font-size: 1.1rem; color: var(--text); white-space: nowrap; }
+    .say span { color: var(--dim); }
+    .tags span { display: inline-block; border-radius: 6px; padding: 1px 8px; margin: 2px 4px 2px 0; font-size: .9rem; color: var(--on-accent); }
+    .shots { display: flex; gap: 14px; overflow-x: auto; padding: 4px 0 10px; scroll-snap-type: x mandatory; }
+    .shots img { height: 460px; max-width: 70vw; object-fit: contain; border-radius: 18px; border: 1px solid var(--border); scroll-snap-align: start; }
+    code { font-size: .85em; background: var(--surface); border-radius: 4px; padding: 1px 5px; overflow-wrap: anywhere; }
+    footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--border); font-size: .85rem; color: var(--dim); }
+    @media (max-width: 520px) {
+      header { padding-top: 28px; }
+      header img { width: 64px; height: 64px; border-radius: 15px; }
+      h1 { font-size: 1.7rem; }
+      .lede { font-size: 1.15rem; }
+      .say { grid-template-columns: 1fr; gap: 0; }
+      .say span { margin-bottom: 8px; }
+      .shots img { height: 380px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="assets/icon.png" alt="">
+    <div><h1>Margin Voice <span class="badge">Beta</span></h1>
+      <div class="dim">for Android · iPhone, iPad and Mac via TestFlight soon</div></div>
+  </header>
+
+  <p class="lede">Review papers by listening. Margin Voice reads a paper to you; when something strikes you, say “stop”, speak your comment, say “continue”. Your comments land on the sentence you just heard, and can go back into the PDF.</p>
+
+  <div class="cta">
+    <a class="button" href="https://github.com/kkai/marginvoice/releases/latest/download/marginvoice-beta.apk">Download for Android</a>
+    <a class="button secondary" href="https://github.com/kkai/marginvoice/releases/latest/download/cuddle-fish.drafttalk">Sample paper</a>
+  </div>
+  <p class="small">Android 13 or newer, 64-bit phone (Pixel 6 and later, most phones since 2019) · about 110 MB ·
+    SHA-256 and all versions on the <a href="https://github.com/kkai/marginvoice/releases">releases page</a>.</p>
+
+  <div class="shots" id="shots" aria-label="Screenshots">
+    <img src="assets/library.png" alt="The library: three papers, with comment and bookmark counts">
+    <img src="assets/player.png" alt="The player: the sentence being read, Play and Comment buttons">
+    <img src="assets/comments.png" alt="Comments with review tags">
+    <img src="assets/export.png" alt="Export: review draft, comments in the PDF, the whole book">
+  </div>
+
+  <h2>Install the beta</h2>
+  <ol>
+    <li>Open this page on your phone and tap <b>Download for Android</b>.</li>
+    <li>Open the downloaded file. Android asks once to allow installs from your browser: allow it, then tap <b>Install</b>.</li>
+    <li>Updates: download the new version the same way; it installs over the old one and keeps your books and comments.</li>
+  </ol>
+
+  <h2>Try it with a paper</h2>
+  <div class="card">
+    <p><b>Cuddle-fish: Exploring a Soft Floating Robot with Flapping Wings for Physical Interactions</b><br>
+      <span class="dim">Xu, Shao, Ju, Shen, Gao, Chen, Zhang, Pai, Barbareschi, Hoppe, Minamizawa, Kunze · Augmented Humans 2025</span></p>
+    <p>Tap <a href="https://github.com/kkai/marginvoice/releases/latest/download/cuddle-fish.drafttalk">Sample paper</a> on the phone and open the file with Margin Voice. It brings the audio, the narration text and the
+      <a href="https://kaikunze.de/papers/pdf/xu2025cuddle.pdf">paper's PDF</a>, so you can export your comments back into it.</p>
+  </div>
+  <p>Your own papers: in Margin Voice's library, open the menu at the top and choose <b>Convert Document…</b>, then pick a PDF, Markdown, RTF or text file. The phone narrates it with its own voice, in the background.</p>
+
+  <h2>What you can say</h2>
+  <div class="say">
+    <b>“stop”</b><span>pause and record a comment (a beep starts it)</span>
+    <b>“continue”</b><span>save the comment and play on, a moment before where you stopped</span>
+    <b>“mark this”</b><span>bookmark the sentence just read</span>
+    <b>“repeat” / “back”</b><span>hear the sentence again / go back 15 seconds</span>
+    <b>“weiter”, “Stopp” …</b><span>the same in German (Settings › Command Language)</span>
+  </div>
+  <p style="margin-top:14px">Start a comment with a review word and it is filed under it:</p>
+  <p class="tags"><span style="background:var(--accent)">summary</span><span style="background:var(--green)">strength</span><span style="background:var(--red)">weakness</span><span style="background:var(--yellow)">question</span><span style="background:var(--dim)">minor</span>
+    <span class="dim">e.g. “weakness: the baseline is never tuned”.</span></p>
+  <p>Export gives a review draft sorted by these headings, the comments as Markdown, CSV or JSON, and the paper's PDF with a highlight and a note on every commented sentence.</p>
+
+  <h2>Private by design</h2>
+  <p>Voice commands and transcription run on the phone. Nothing is sent anywhere, unless you turn on sync with your own Nextcloud or WebDAV server (Settings › Sync), which also reaches Margin Voice on iPhone, iPad and Mac. There is no account, no analytics and no tracking. <a href="privacy.html">Privacy policy</a>.</p>
+
+  <h2>This is a beta</h2>
+  <ul>
+    <li>Tested on a Pixel 6 Pro. Other phones' microphones and Bluetooth stacks may behave differently.</li>
+    <li>Voice commands can misfire while a book plays over the speaker; headphones help.</li>
+    <li>Natural neural voices for converting papers on the phone are coming; for now the phone's own voice reads them.</li>
+    <li>Found a problem or have an idea? <a href="https://github.com/kkai/marginvoice/issues/new">Open an issue on GitHub</a>.</li>
+  </ul>
+
+  <footer>
+    Margin Voice by <a href="https://kaikunze.de">Kai Kunze</a>. Open-source components and their licences are listed in the app under Settings › Licences.
+  </footer>
+</main>
+</body>
+</html>
