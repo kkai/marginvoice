@@ -152,8 +152,7 @@
       <h3>iPhone, iPad and Mac <span class="badge">TestFlight</span></h3>
       <p class="dim">iOS 26 and macOS 26; the Mac app needs Apple silicon. One app covers all three devices, first through TestFlight, then on the App Store.</p>
       <div class="cta">
-        <!-- the TestFlight link goes into data-href; the button then turns live -->
-        <a class="button waiting" id="testflight" data-href="" href="#apple">TestFlight link coming soon</a>
+        <a class="button" id="testflight" href="https://testflight.apple.com/join/6FFZQbhX">Join on TestFlight</a>
       </div>
       <p class="small">TestFlight is Apple’s app for beta versions. Open the link on the iPhone, iPad or Mac to join.</p>
     </div>
@@ -240,12 +239,6 @@
 </main>
 <script>
   (function () {
-    // TestFlight: the button turns live once data-href holds the link
-    var tf = document.getElementById('testflight');
-    if (tf.dataset.href) {
-      tf.href = tf.dataset.href; tf.textContent = 'Join on TestFlight'; tf.classList.remove('waiting');
-    }
-
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // hero waveform
